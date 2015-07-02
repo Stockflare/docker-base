@@ -19,7 +19,7 @@ RUN wget http://ftp.ruby-lang.org/pub/ruby/$RUBY_VERSION/ruby-$RUBY_VERSION.$RUB
     rm ../ruby-$RUBY_VERSION.$RUBY_BUILD.tar.gz
 
 # Setup the working directory
-WORKDIR /bruw
+WORKDIR /stockflare
 
 # Install Bundler
 RUN gem install bundler
@@ -29,7 +29,7 @@ EXPOSE 2345
 ENV PORT 2345
 
 # Add current working directory in child builds
-ONBUILD ADD ./ /bruw
+ONBUILD ADD ./ /stockflare
 
 # Bundle install child working directory
 ONBUILD RUN bundle install
