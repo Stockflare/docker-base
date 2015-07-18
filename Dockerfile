@@ -18,6 +18,10 @@ RUN wget http://ftp.ruby-lang.org/pub/ruby/$RUBY_VERSION/ruby-$RUBY_VERSION.$RUB
     cd ruby-$RUBY_VERSION.$RUBY_BUILD && ./configure --prefix=/usr/local && make && make install && \
     rm ../ruby-$RUBY_VERSION.$RUBY_BUILD.tar.gz
 
+COPY bin/broadcast /usr/bin/broadcast
+
+RUN chmod +x /usr/bin/broadcast
+
 # Setup the working directory
 WORKDIR /stockflare
 
