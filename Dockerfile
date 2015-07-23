@@ -9,6 +9,7 @@ ENV RUBY_BUILD 2
 # Configure deps.
 RUN apt-get -y update && \
     apt-get -yq --no-install-recommends install wget build-essential mysql-client mysql-common libmysqlclient-dev \
+    ca-certificates libnotify-dev \
     zlib1g-dev libssl-dev libreadline6-dev libyaml-dev libgtkmm-2.4 libsasl2-dev git-core && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
