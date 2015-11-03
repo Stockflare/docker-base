@@ -1,4 +1,4 @@
-FROM ubuntu:15.04
+FROM ubuntu:trusty
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -26,7 +26,7 @@ RUN sudo pip install awscli
 
 # Install logging boradcaster
 COPY bin/broadcast /usr/bin/broadcast
-RUN chmod +x /usr/bin/broadcast
+RUN sudo chmod +x /usr/bin/broadcast
 
 # Install NVM and Node
 RUN /bin/bash -l -c "curl https://raw.githubusercontent.com/creationix/nvm/v0.17.3/install.sh | bash"
