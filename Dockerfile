@@ -1,23 +1,23 @@
-FROM ubuntu:15.04
+FROM alpine
 
-ENV DEBIAN_FRONTEND noninteractive
+RUN apk update && apk upgrade \
+  && apk add ca-certificates \
+  && rm -rf /var/cache/apk/*
 
-ENV RUBY_VERSION 2.2
+ENV RUBY_VERSION 2.2.4
 
 ENV RUBY_BUILD 2
 
-# Configure deps.
-RUN apt-get -y update && \
-    apt-get -yq --no-install-recommends install wget build-essential mysql-client mysql-common libmysqlclient-dev \
-    ca-certificates libnotify-dev \
-    zlib1g-dev libssl-dev libreadline6-dev libyaml-dev libgtkmm-2.4 libsasl2-dev git-core && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN apk update && apk upgrade
 
-# Install Ruby
-RUN wget http://ftp.ruby-lang.org/pub/ruby/$RUBY_VERSION/ruby-$RUBY_VERSION.$RUBY_BUILD.tar.gz && \
-    tar -xvzf ruby-$RUBY_VERSION.$RUBY_BUILD.tar.gz && \
-    cd ruby-$RUBY_VERSION.$RUBY_BUILD && ./configure --prefix=/usr/local && make && make install && \
-    rm ../ruby-$RUBY_VERSION.$RUBY_BUILD.tar.gz
+# Configure deps.
+RUN apk update && apk upgrade \
+    && apk add libxml2 libxslt libevent libffi glib ncurses readline \
+    openssl yaml zlib curl  mariadb-libs libpq ruby ruby-io-console \
+    git build-base ruby-dev bash
+
+RUN rm -rf /var/cache/apk/*
+
 
 COPY bin/broadcast /usr/bin/broadcast
 
@@ -27,6 +27,8 @@ RUN chmod +x /usr/bin/broadcast
 WORKDIR /stockflare
 
 # Install Bundler
+RUN echo 'gem: --no-document' >> ~/.gemrc
+RUN echo 'gem: --no-document' >> /etc/gemrc
 RUN gem install bundler
 
 # Expose port 2345 and set env variable

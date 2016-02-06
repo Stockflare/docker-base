@@ -1,0 +1,11 @@
+ruby:
+  build: .
+  command: dotenv puma
+  environment:
+    PORT: 2345
+    RACK_ENV: development
+  ports:
+    - "4647:4647"
+    - "2345:2345"
+  volumes:
+    - .:/stockflare
