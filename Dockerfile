@@ -32,8 +32,8 @@ RUN sudo chmod +x /usr/bin/broadcast
 RUN /bin/bash -l -c "curl https://raw.githubusercontent.com/creationix/nvm/v0.17.3/install.sh | bash"
 RUN /bin/bash -l -c "echo 'source ~/.nvm/nvm.sh' >> ~/.profile"
 ENV PATH $HOME/.nvm/bin:$PATH
-RUN /bin/bash -l -c "nvm install v0.10.36"
-RUN /bin/bash -l -c "nvm alias default 0.10.36"
+RUN /bin/bash -l -c "nvm install v4.3"
+RUN /bin/bash -l -c "nvm alias default 4.3"
 RUN /bin/bash -l -c "npm install -g gulp"
 RUN /bin/bash -l -c "npm install -g grunt-cli"
 
