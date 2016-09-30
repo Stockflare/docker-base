@@ -1,59 +1,65 @@
-FROM ubuntu:trusty
+FROM nginx:1.11.3
+
+MAINTAINER David Kelley <david@stockflare.com>
+
+# Set the environment of Hodor to build
+ARG stage=production
 
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN adduser --disabled-password --gecos "" nuser && echo "nuser ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
-# set HOME so 'npm install' and 'bower install' don't write to /
-ENV HOME /home/nuser
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US.en
-ENV LC_ALL en_US.UTF-8
-USER nuser
-# RUN sudo locale-gen
+ENV LISTEN_ON 80
 
-# Add all base dependencies
-RUN sudo apt-get update
-RUN sudo apt-get install -y language-pack-en-base
-RUN sudo apt-get install -y vim curl
-RUN sudo apt-get install -y build-essential
-RUN sudo apt-get install -y git-core
-RUN sudo apt-get install -y man
-RUN sudo apt-get install -y dnsutils
+ENV CONFD_VERSION 0.10.0
 
-# Install the latest AWS cli - needed for S3 command line actions in scripts
-RUN sudo apt-get install -y python-pip
-RUN sudo pip install awscli
+ENV USER_AGENT_MATCH "googlebot|yahoo|bingbot|baiduspider|yandex|yeti|yodaobot|gigabot|ia_archiver|facebookexternalhit|twitterbot|developers\.google\.com"
 
-# Install logging boradcaster
-COPY bin/broadcast /usr/bin/broadcast
-RUN sudo chmod +x /usr/bin/broadcast
+RUN update-ca-certificates
 
-# Install NVM and Node
-RUN /bin/bash -l -c "curl https://raw.githubusercontent.com/creationix/nvm/v0.17.3/install.sh | bash"
-RUN /bin/bash -l -c "echo 'source ~/.nvm/nvm.sh' >> ~/.profile"
-ENV PATH $HOME/.nvm/bin:$PATH
-RUN /bin/bash -l -c "nvm install v4.3"
-RUN /bin/bash -l -c "nvm alias default 4.3"
-RUN /bin/bash -l -c "npm install -g gulp"
-RUN /bin/bash -l -c "npm install -g grunt-cli"
+# Install Node.js and other dependencies
+RUN apt-get update && \
+    apt-get -y install curl && \
+    curl -sL https://deb.nodesource.com/setup_4.x | bash - && \
+    apt-get -y install python build-essential nodejs
+
+# Install Ruby
+RUN apt-get -y install git-core wget build-essential zlib1g-dev libssl-dev libreadline6-dev libyaml-dev
+RUN wget http://ftp.ruby-lang.org/pub/ruby/2.1/ruby-2.1.2.tar.gz
+RUN tar -xvzf ruby-2.1.2.tar.gz
+RUN cd ruby-2.1.2 && ./configure --prefix=/usr/local
+RUN cd ruby-2.1.2 && make
+RUN cd ruby-2.1.2 && make install
+
+# Install bower and grunt
+RUN npm install bower -g
+RUN npm install grunt-cli -g
 
 # Setup the working directory
 WORKDIR /stockflare
 
-RUN sudo chown -R nuser:nuser /stockflare/
+ENV NODE_ENV production
+ENV DEPLOY production
+ENV DEBUG "app:"
 
-RUN sudo apt-get autoremove -y
+# Add Hodor
+ONBUILD ADD . /stockflare
 
-# Expose port 2345 and set env variable
-EXPOSE 2345
-ENV PORT 2345
+ONBUILD WORKDIR /stockflare
 
-# Add current working directory in child builds
-ONBUILD ADD ./ /stockflare
-ONBUILD RUN sudo chown -R nuser:nuser .
+ONBUILD RUN npm install
+ONBUILD RUN npm install fastclick
+ONBUILD RUN npm install simple-git
 
-# Bundle child working directory
-ONBUILD RUN /bin/bash -l -c "npm install"
+# Build Snow
+ONBUILD RUN npm run clean && npm run compile
 
-# Setup the entrypoint
-ENTRYPOINT ["/bin/bash", "-l", "-c"]
+ONBUILD RUN mkdir /app && cp -r dist/* /app/
+
+ONBUILD ADD .build/etc/confd /etc/confd
+
+ONBUILD ADD .build/confd/confd-0.10.0-linux-amd64 /bin/confd
+
+ONBUILD WORKDIR /nginx
+
+ONBUILD ADD .build/boot boot
+
+CMD ["./boot"]
