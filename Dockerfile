@@ -35,31 +35,3 @@ RUN npm install grunt-cli -g
 
 # Setup the working directory
 WORKDIR /stockflare
-
-ENV NODE_ENV production
-ENV DEPLOY production
-ENV DEBUG "app:"
-
-# Add Hodor
-ONBUILD ADD . /stockflare
-
-ONBUILD WORKDIR /stockflare
-
-ONBUILD RUN npm install
-ONBUILD RUN npm install fastclick
-ONBUILD RUN npm install simple-git
-
-# Build Snow
-ONBUILD RUN npm run clean && npm run compile
-
-ONBUILD RUN mkdir /app && cp -r dist/* /app/
-
-ONBUILD ADD .build/etc/confd /etc/confd
-
-ONBUILD ADD .build/confd/confd-0.10.0-linux-amd64 /bin/confd
-
-ONBUILD WORKDIR /nginx
-
-ONBUILD ADD .build/boot boot
-
-CMD ["./boot"]
