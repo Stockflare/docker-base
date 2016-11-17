@@ -13,11 +13,5 @@ RUN apk update && apk upgrade && apk add ${BUILD_PACKAGES} ${RUBY_PACKAGES} && r
 # Setup the working directory
 WORKDIR /stockflare
 
-# Add current working directory in child builds
-ONBUILD ADD ./ /stockflare
-
-# Bundle install child working directory
-ONBUILD RUN bundle install
-
 # Default the command to start the server
 CMD ["puma"]
