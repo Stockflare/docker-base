@@ -30,8 +30,13 @@ RUN /bin/bash -l -c "echo 'source ~/.nvm/nvm.sh' >> ~/.profile"
 ENV PATH $HOME/.nvm/bin:$PATH
 RUN /bin/bash -l -c "nvm install v4.5"
 RUN /bin/bash -l -c "nvm alias default 4.5"
-RUN /bin/bash -l -c "npm install -g gulp"
-RUN /bin/bash -l -c "npm install -g grunt-cli"
+RUN /bin/bash -l -c "npm install -g serverless"
+RUN /bin/bash -l -c "npm i -g eslint"
+RUN /bin/bash -l -c "npm install -g babel-eslint"
+RUN /bin/bash -l -c "npm install -g eslint-config-standard"
+RUN /bin/bash -l -c "npm install -g eslint-plugin-babel"
+RUN /bin/bash -l -c "npm install -g eslint-plugin-react"
+RUN /bin/bash -l -c "npm install -g eslint-plugin-promise"
 
 # Setup the working directory
 WORKDIR /project
