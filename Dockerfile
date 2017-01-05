@@ -4,7 +4,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 ENV BUILD_PACKAGES="build-base ca-certificates libxml2 libxslt openssl yaml git zlib glib"
 
-ENV RUBY_PACKAGES="ruby ruby-io-console ruby-dev ruby-bundler"
+ENV RUBY_PACKAGES="ruby ruby-io-console ruby-dev ruby-bundler ruby-irb"
 
 # Configure deps.
 RUN apk update && apk upgrade && apk add ${BUILD_PACKAGES} ${RUBY_PACKAGES} && rm -rf /var/cache/apk/* \
