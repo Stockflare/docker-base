@@ -1,0 +1,1 @@
+# stockflare/base:serverless
