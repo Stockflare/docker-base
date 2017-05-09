@@ -28,15 +28,8 @@ RUN sudo pip install awscli
 RUN /bin/bash -l -c "curl https://raw.githubusercontent.com/creationix/nvm/v0.17.3/install.sh | bash"
 RUN /bin/bash -l -c "echo 'source ~/.nvm/nvm.sh' >> ~/.profile"
 ENV PATH $HOME/.nvm/bin:$PATH
-RUN /bin/bash -l -c "nvm install v4.5"
-RUN /bin/bash -l -c "nvm alias default 4.5"
-RUN /bin/bash -l -c "npm install -g serverless"
-RUN /bin/bash -l -c "npm i -g eslint"
-RUN /bin/bash -l -c "npm install -g babel-eslint"
-RUN /bin/bash -l -c "npm install -g eslint-config-standard"
-RUN /bin/bash -l -c "npm install -g eslint-plugin-babel"
-RUN /bin/bash -l -c "npm install -g eslint-plugin-react"
-RUN /bin/bash -l -c "npm install -g eslint-plugin-promise"
+RUN /bin/bash -l -c "nvm install v6.10"
+RUN /bin/bash -l -c "nvm alias default 6.10"
 
 # Setup the working directory
 WORKDIR /project
